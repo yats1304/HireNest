@@ -48,7 +48,7 @@ export async function initDB() {
             )
         `;
 
-        console.log("Database tables checked/created successfully ✅");
+        console.log("Database tables checked/created successfully✅");
     } catch (error) {
         console.log("Error initializing database ❌", error);
         process.exit(1);
