@@ -3,14 +3,17 @@ import dotenv from "dotenv"
 import routes from "./routes/upload.route.js";
 import cors from "cors"
 import { v2 as cloudinary } from 'cloudinary';
+import { startSendMailConsumer } from "./consumer.js";
 
 dotenv.config()
 
-  cloudinary.config({ 
-        cloud_name: process.env.CLOUD_NAME, 
-        api_key: process.env.API_KEY, 
-        api_secret: process.env.API_SECRET
-    });
+startSendMailConsumer()
+
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET
+});
 
 const app = express();
 

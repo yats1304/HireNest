@@ -1,10 +1,11 @@
 import express from "express"
-import { loginUser, registerUser } from "../controller/controller.auth.js";
+import { forgotPassword, loginUser, registerUser } from "../controller/controller.auth.js";
 import uploadFile from "../middleware/multer.middleware.js";
 
 const router = express.Router();
 
 router.post("/register",uploadFile, registerUser)
 router.post("/login", loginUser)
+router.post("/forgot", forgotPassword)
 
 export default router
