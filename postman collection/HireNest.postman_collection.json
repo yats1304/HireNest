@@ -1,0 +1,267 @@
+{
+  "info": {
+    "_postman_id": "33e5b50d-69ce-4cc9-be70-687854301fc6",
+    "name": "HireNest",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17407322"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Yatish Chaubal",
+                  "type": "text",
+                  "uuid": "e25a51b8-1b8c-44b9-acd1-fb085d3f7496"
+                },
+                {
+                  "key": "email",
+                  "value": "chaubaly@gmail.com",
+                  "type": "text",
+                  "uuid": "600318ea-5a49-494a-9648-cf0d0036fee4"
+                },
+                {
+                  "key": "password",
+                  "value": "yatish123",
+                  "type": "text",
+                  "uuid": "d5dcd432-b8dc-4bb1-8e9f-a9b7e564b8e9"
+                },
+                {
+                  "key": "phoneNumber",
+                  "value": "8551994340",
+                  "type": "text",
+                  "uuid": "ad591416-dc52-4ebc-8a46-7349aeb6c08b"
+                },
+                {
+                  "key": "role",
+                  "value": "jobseeker",
+                  "type": "text",
+                  "uuid": "150f83b1-370f-40d9-bde1-a4b0b3c553ec"
+                },
+                {
+                  "key": "bio",
+                  "value": "hey dummy",
+                  "type": "text",
+                  "uuid": "1499644f-89c1-416e-b575-38de524fb3e0"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "09727700-fa7a-4ee8-adbb-f7cb7ef7dc6b",
+                  "src": "postman-cloud:///1f151bd7-e152-45e0-b6d1-b933253e41e2"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Auth_Service}}/register",
+              "host": [
+                "{{Auth_Service}}"
+              ],
+              "path": [
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"chaubaly@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Auth_Service}}/login",
+              "host": [
+                "{{Auth_Service}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"chaubaly@gmail.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Auth_Service}}/forgot",
+              "host": [
+                "{{Auth_Service}}"
+              ],
+              "path": [
+                "forgot"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Auth_Service}}/reset/:token",
+              "host": [
+                "{{Auth_Service}}"
+              ],
+              "path": [
+                "reset",
+                ":token"
+              ],
+              "variable": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoYXViYWx5QGdtYWlsLmNvbSIsInR5cGUiOiJyZXNldCIsImlhdCI6MTc4MDQyMTYxMywiZXhwIjoxNzgwNDIyNTEzfQ.u_d1lDearhGoeKM_6ZxAW5j0u8IDgSke3QahGKPQyN4"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile section",
+      "item": [
+        {
+          "name": "My profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5002/api/user/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5002",
+              "path": [
+                "api",
+                "user",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User profile by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{User_Service}}/:userId",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "Auth_Service",
+      "value": "http://localhost:5000/api/auth"
+    },
+    {
+      "key": "User_Service",
+      "value": "http://localhost:5002/api/user"
+    }
+  ]
+}
