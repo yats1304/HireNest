@@ -1,4 +1,6 @@
+import axios from "axios";
 import { AuthenticatedRequest } from "../middleware/auth.middleware.js";
+import getBuffer from "../utils/buffer.js";
 import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/tryCatch.js";
@@ -30,4 +32,103 @@ export const getUserProfile = TryCatch(async(req,res,next)=>{
     user.skills = user.skills || []
 
     res.json(user)
+})
+
+export const updateUserProfile = TryCatch(async(req:AuthenticatedRequest, res)=>{
+    const user = req.user
+
+    if(!user){
+        throw new ErrorHandler(401, "Authentication required!")
+    }
+
+    const {name, phoneNumber, bio} = req.body;
+
+    const newName = name || user.name;
+    const newPhoneNumber = phoneNumber || user.phone_number;
+    const newBio = bio || user.bio;
+
+    const [updatedUser] = await sql`
+        UPDATE users SET name = ${newName}, phone_number = ${newPhoneNumber}, bio = ${newBio}
+        WHERE user_id = ${user.user_id}
+        RETURNING user_id, name, email, phone_number, bio
+    `;
+
+    res.json({
+        message: "Profile updated successfully!",
+        updatedUser
+    })
+})
+
+export const updateProfilePicture = TryCatch(async(req:AuthenticatedRequest, res,next)=>{
+    const user = req.user
+
+    if(!user){
+        throw new ErrorHandler(401, "Authentication required!")
+    }
+
+    const file = req.file
+
+    if(!file){
+        throw new ErrorHandler(400, "No image file provided")
+    }
+
+    const oldPublicId = user.profile_pic_public_id
+
+    const fileBuffer = getBuffer(file)
+
+    if(!fileBuffer || !fileBuffer.content){
+        throw new ErrorHandler(500, "Fail to generate buffer")
+    }
+
+    const {data: uploadResult} = await axios.post<{url: string, public_id: string}>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,{
+        buffer: fileBuffer.content,
+        public_id: oldPublicId
+    })
+
+    const [updatedUser] = await sql`
+    UPDATE users SET profile_pic = ${uploadResult.url}, profile_pic_public_id = ${uploadResult.public_id} WHERE user_id = ${user.user_id}
+    RETURNING user_id, name, profile_pic;
+    `;
+
+    res.json({
+        message: "Profile pic updated",
+        updatedUser
+    })
+})
+
+export const updateResume = TryCatch(async(req:AuthenticatedRequest, res,next)=>{
+    const user = req.user
+
+    if(!user){
+        throw new ErrorHandler(401, "Authentication required!")
+    }
+
+    const file = req.file
+
+    if(!file){
+        throw new ErrorHandler(400, "No pdf file provided")
+    }
+
+    const oldPublicId = user.resume_public_id
+
+    const fileBuffer = getBuffer(file)
+
+    if(!fileBuffer || !fileBuffer.content){
+        throw new ErrorHandler(500, "Fail to generate buffer")
+    }
+
+    const {data: uploadResult} = await axios.post<{url: string, public_id: string}>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,{
+        buffer: fileBuffer.content,
+        public_id: oldPublicId
+    })
+
+    const [updatedUser] = await sql`
+    UPDATE users SET resume = ${uploadResult.url}, resume_public_id = ${uploadResult.public_id} WHERE user_id = ${user.user_id}
+    RETURNING user_id, name, resume;
+    `;
+
+    res.json({
+        message: "Resume updated",
+        updatedUser
+    })
 })

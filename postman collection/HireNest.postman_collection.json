@@ -195,7 +195,7 @@
           "response": []
         },
         {
-          "name": "User profile by ID",
+          "name": "Find user by ID",
           "request": {
             "auth": {
               "type": "bearer",
@@ -226,10 +226,128 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Update profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Yatish\",\r\n    \"phoneNumber\": \"8551994340\",\r\n    \"bio\": \"hey dude\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{User_Service}}/update/profile",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "update",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update pic",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "d51b9cf8-24f7-4e3d-9814-1496aca94c8a",
+                  "src": "postman-cloud:///1f0f436d-3ac4-4860-a619-2fc3ad55edcf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{User_Service}}/update/pic",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "update",
+                "pic"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update resume",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "d51b9cf8-24f7-4e3d-9814-1496aca94c8a",
+                  "src": "postman-cloud:///1f0f436d-3ac4-4860-a619-2fc3ad55edcf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{User_Service}}/update/resume",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "update",
+                "resume"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
   ],
+  "auth": {
+    "type": "bearer"
+  },
   "event": [
     {
       "listen": "prerequest",
