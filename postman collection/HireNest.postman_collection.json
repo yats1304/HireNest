@@ -179,16 +179,86 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:5002/api/user/me",
-              "protocol": "http",
+              "raw": "{{User_Service}}/me",
               "host": [
-                "localhost"
+                "{{User_Service}}"
               ],
-              "port": "5002",
               "path": [
-                "api",
-                "user",
                 "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add skill",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"skillName\":\"NodeJs\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{User_Service}}/skill/add",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "skill",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete skill",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNDczNjg5LCJleHAiOjE3ODE3Njk2ODl9.XFTSvNLu7VDuFdc8fPHB00fLK4ENrqTqO_Ru6_SR8ec",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"skillName\":\"NodeJs\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{User_Service}}/skill/delete",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "skill",
+                "delete"
               ]
             }
           },
