@@ -536,12 +536,97 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Create Job",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Full stack developer\",\r\n    \"description\": \"We want full stack developer with 2 years of experience\",\r\n    \"salary\": \"100000\",\r\n    \"location\": \"Mumbai\",\r\n    \"role\": \"Full stack developer\",\r\n    \"job_type\": \"Full-time\",\r\n    \"work_location\": \"Remote\",\r\n    \"company_id\": 2,\r\n    \"openings\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Job_Service}}/new",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "new"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update job",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Full stack developer\",\r\n    \"description\": \"We want full stack developer with 2 years of experience\",\r\n    \"salary\": \"100000\",\r\n    \"location\": \"Banglore\",\r\n    \"role\": \"Full stack developer\",\r\n    \"job_type\": \"Full-time\",\r\n    \"work_location\": \"Remote\",\r\n    \"company_id\": 2,\r\n    \"openings\": 1,\r\n    \"is_active\": \"true\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Job_Service}}/:jobId",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                ":jobId"
+              ],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     }
   ],
   "auth": {
-    "type": "bearer"
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTg2MDUzLCJleHAiOjE3ODE4ODIwNTN9.R1G3bj9tR9azypREkuj5NnuLhkDEdnwdvdt3IZmdTPc",
+        "type": "string"
+      }
+    ]
   },
   "event": [
     {
