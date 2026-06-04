@@ -25,7 +25,7 @@
                 },
                 {
                   "key": "email",
-                  "value": "chaubaly@gmail.com",
+                  "value": "chaubalyatish@gmail.com",
                   "type": "text",
                   "uuid": "600318ea-5a49-494a-9648-cf0d0036fee4"
                 },
@@ -43,7 +43,7 @@
                 },
                 {
                   "key": "role",
-                  "value": "jobseeker",
+                  "value": "recruiter",
                   "type": "text",
                   "uuid": "150f83b1-370f-40d9-bde1-a4b0b3c553ec"
                 },
@@ -413,6 +413,131 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Create company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/company/new",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "company",
+                "new"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/company/:companyId",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "company",
+                ":companyId"
+              ],
+              "variable": [
+                {
+                  "key": "companyId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "auth": {
@@ -450,6 +575,10 @@
     {
       "key": "User_Service",
       "value": "http://localhost:5002/api/user"
+    },
+    {
+      "key": "Job_Service",
+      "value": "http://localhost:5003/api/job"
     }
   ]
 }
