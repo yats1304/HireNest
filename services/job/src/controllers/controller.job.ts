@@ -154,3 +154,79 @@ export const updateJob = TryCatch(async(req:AuthenticatedRequest, res)=>{
         job: updatedJob
     })
 })
+
+export const getAllCompanies = TryCatch(async(req:AuthenticatedRequest, res)=>{
+    const [companies] = await sql`SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id}`
+
+    res.json(companies)
+})
+
+export const getCompanyDetails = TryCatch(async(req:AuthenticatedRequest, res)=>{
+    const {id} = req.params
+
+    if(!id){
+        throw new ErrorHandler(400, "Company Id is required!")
+    }
+
+    const [companyData] = await sql`
+        SELECT
+            c.*,
+            COALESCE(
+            (
+                SELECT json_agg(j.*)
+                FROM jobs j
+                WHERE j.company_id = c.company_id
+            ),
+            '[]'::json
+            ) AS jobs
+        FROM companies c
+        WHERE c.company_id = ${id}
+        GROUP BY c.company_id;
+        `;
+
+        if(!companyData){
+            throw new ErrorHandler(404, "Company not found!")
+        }
+
+        res.json(companyData)
+})
+
+export const getAllActiveJobs = TryCatch(async(req, res)=>{
+    const {title, location} = req.params as {
+        title: string,
+        location: string
+    }
+
+    let queryString = `SELECT j.job_id, j.title, j.description, j.salary, j.location, j.job_type,
+    j.role, j.work_location, j.created_at, c.name AS company_name, c.logo AS company_logo, c.company_id
+    AS company_id FROM jobs j JOIN companies c ON j.company_id = c.company_id WHERE j.is_active = true`;
+    
+    const values = [];
+
+    let paramsIndex = 1
+
+    if(title){
+        queryString += ` AND j.title ILIKE $${paramsIndex}`;
+        values.push(`%${title}%`);
+        paramsIndex++
+    }
+
+    if(location){
+        queryString += ` AND j.location ILIKE $${paramsIndex}`;
+        values.push(`%${location}%`);
+        paramsIndex++
+    }
+
+    queryString += " ORDER BY j.created_at DESC";
+
+    const jobs = await sql.query(queryString,values) as any[]
+
+    res.json(jobs)
+
+})
+
+export const getSingleJob = TryCatch(async(req,res)=>{
+    const [job] = await sql`SELECT * FROM jobs WHERE job_id = ${req.params.jobId}`
+
+    res.json(job)
+})
