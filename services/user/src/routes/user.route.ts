@@ -1,6 +1,6 @@
 import express from "express"
 import { isAuth } from "../middleware/auth.middleware.js"
-import { addSkillsToUser, deleteSkillFromUser, getUserProfile, myProfile, updateProfilePicture, updateResume, updateUserProfile } from "../controller/user.controller.js"
+import { addSkillsToUser, applyForJob, deleteSkillFromUser, getAllApplications, getUserProfile, myProfile, updateProfilePicture, updateResume, updateUserProfile } from "../controller/user.controller.js"
 import uploadFile from "../middleware/multer.middleware.js"
 
 const router = express.Router()
@@ -12,5 +12,7 @@ router.put("/update/pic", isAuth, uploadFile, updateProfilePicture)
 router.put("/update/resume", isAuth, uploadFile, updateResume)
 router.post("/skill/add", isAuth, addSkillsToUser)
 router.delete("/skill/delete", isAuth, deleteSkillFromUser)
+router.post("/apply/job", isAuth, applyForJob)
+router.get("/applications/all", isAuth, getAllApplications)
 
 export default router

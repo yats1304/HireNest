@@ -538,6 +538,345 @@
           "response": []
         },
         {
+          "name": "Get all companies",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/company/all",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "company",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get active job",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/all",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "title",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "location",
+                  "value": null,
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get job by Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/:jobId",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                ":jobId"
+              ],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Apply for job",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNzYyNDA1LCJleHAiOjE3ODIwNTg0MDV9.Aje1OomJHTQrefyfjbtYaj4tzkbIcAW9HgQtHs3nzt8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"job_id\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{User_Service}}/apply/job",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "apply",
+                "job"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all applications for user",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzgwNzYyNDA1LCJleHAiOjE3ODIwNTg0MDV9.Aje1OomJHTQrefyfjbtYaj4tzkbIcAW9HgQtHs3nzt8",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{User_Service}}/applications/all",
+              "host": [
+                "{{User_Service}}"
+              ],
+              "path": [
+                "applications",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get company by Id",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwNTc0OTM4LCJleHAiOjE3ODE4NzA5Mzh9.E5PiiU-fMeGPN_YyXxjskFuOo2ZsympsbYW9NG1j26Y",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Google",
+                  "type": "text",
+                  "uuid": "1ebd5788-34aa-4b1c-a17b-808d93c4ac38"
+                },
+                {
+                  "key": "description",
+                  "value": "Hello welcome to google comapny",
+                  "type": "text",
+                  "uuid": "39bd6f32-9a34-4801-8d8c-b41c69241386"
+                },
+                {
+                  "key": "website",
+                  "value": "http://www.google.com",
+                  "type": "text",
+                  "uuid": "b12a4f1f-63af-4497-a370-74b74867d699"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "4bf73d21-9d92-46e5-a374-b224d3a9dbb6",
+                  "src": "postman-cloud:///1f1600ed-f299-4910-8253-02c29ca1944e"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{Job_Service}}/company/:id",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "company",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Create Job",
           "request": {
             "auth": {
