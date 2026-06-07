@@ -811,6 +811,96 @@
           "response": []
         },
         {
+          "name": "Get all applications for recruiter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwODA3NjE2LCJleHAiOjE3ODIxMDM2MTZ9.dxbFTkxIpW9-8rp24iETjOBHlPfMS4OCwfQi7-HICnI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Job_Service}}/applications/:jobId",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "applications",
+                ":jobId"
+              ],
+              "variable": [
+                {
+                  "key": "jobId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update application status (recruiter)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzgwODA3NjE2LCJleHAiOjE3ODIxMDM2MTZ9.dxbFTkxIpW9-8rp24iETjOBHlPfMS4OCwfQi7-HICnI",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"status\": \"Hired\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Job_Service}}/application/update/:id",
+              "host": [
+                "{{Job_Service}}"
+              ],
+              "path": [
+                "application",
+                "update",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get company by Id",
           "protocolProfileBehavior": {
             "disableBodyPruning": true
