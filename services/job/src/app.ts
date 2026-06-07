@@ -1,5 +1,5 @@
 import express from "express"
-import jobRoute from "./routes/route.job.js"
+import jobRoute from "./routes/job.route.js"
 import { connectKafka } from "./producer.js"
 
 const app = express()

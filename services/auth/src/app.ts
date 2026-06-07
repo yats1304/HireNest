@@ -1,5 +1,5 @@
 import express from "express"
-import authRoutes from "./routes/route.auth.js"
+import authRoutes from "./routes/auth.route.js"
 import { connectKafka } from "./producer.js"
 import { createClient } from "redis"
 
