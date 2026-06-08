@@ -7,15 +7,17 @@ import { Briefcase, Home, Info, LogOut, Menu, User, X } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { ModeToggle } from '../mode-toggle';
+import { useAppData } from '@/context/AppContext';
 
 const Navbar = () => {
     const [isOpen, setisOpen] = useState(false);
+
+    const { isAuth, user, setIsAuth, setUser, loading } = useAppData()
 
     const toggleMenu = () =>{
         setisOpen(!isOpen)
     }
 
-    const isAuth = true
 
     const logoutHandler = () =>{
 
@@ -57,16 +59,19 @@ const Navbar = () => {
                 {/* Right side actions */}
 
                 <div className="hidden md:flex items-center gap-3">
-                    {isAuth ? (
+                    {
+                        loading ? "" :
+                        <>
+                            {isAuth ? (
                         <>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                                         <Avatar className="h-9 w-9 ring-2 ring-offset-2 ring-offset-background ring-blue-500/20 cursor-pointer
                                         hover:ring-blue-500/40 transition-all">
-                                            {/* <AvatarImage src={} alt="" /> */}
+                                            <AvatarImage src={ user ? user.profile_pic as string: ""} alt={ user ? user.name : ""} />
                                             <AvatarFallback className="bg-blue-100 dark:bg-blue-900 text-blue-600">
-                                                Y
+                                                { user?.name?.charAt(0).toUpperCase() || "U" }
                                             </AvatarFallback> 
                                         </Avatar>
                                     </button>
@@ -91,6 +96,8 @@ const Navbar = () => {
                             </Popover>
                         </>): 
                             (<Link href={"/login"}><Button className='gap-2'><User size={16}/>Sign In</Button></Link>)}
+                        </>
+                    }
                         <ModeToggle/>
                 </div>
                 {/* Mobile Menu Button */}

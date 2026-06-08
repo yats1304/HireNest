@@ -2,6 +2,7 @@ import express from "express"
 import authRoutes from "./routes/auth.route.js"
 import { connectKafka } from "./producer.js"
 import { createClient } from "redis"
+import cors from "cors"
 
 const app = express()
 
@@ -12,6 +13,7 @@ export const redisClient = createClient({
 redisClient.connect().then(()=>console.log("Connected to Redis✅")).catch(console.error)
 
 app.use(express.json())
+app.use(cors())
 
 connectKafka()
 

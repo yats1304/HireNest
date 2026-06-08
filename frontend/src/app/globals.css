@@ -127,3 +127,11 @@
     @apply font-sans;
     }
 }
+
+@layer utilities {
+  .icon-style {
+    @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none;
+    width: 16px;
+    height: 16px;
+  }
+}

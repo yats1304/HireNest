@@ -22,7 +22,9 @@ import {
   Zap,
 } from "lucide-react";
 import axios from "axios";
-import { ResumeAnalysisResponse, utils_service } from "@/types"
+import { ResumeAnalysisResponse } from "@/types"
+import { utils_service } from "@/context/AppContext";
+import toast from "react-hot-toast";
 
 // import toast from "react-hot-toast";
 
@@ -40,12 +42,12 @@ const ResumeAnalyzer = () => {
 
     if (selectedFile) {
       if (selectedFile.type !== "application/pdf") {
-        alert("Please upload a PDF file");
+        toast.error("Please upload a PDF file");
         return;
       }
 
       if (selectedFile.size > 5 * 1024 * 1024) {
-        alert("File size should be less than 5MB");
+        toast.error("File size should be less than 5MB");
         return;
       }
 
@@ -66,7 +68,7 @@ const ResumeAnalyzer = () => {
 
   const analyzeResume = async () => {
     if (!file) {
-      alert("Please upload a resume");
+      toast.error("Please upload a resume");
       return;
     }
 
@@ -83,9 +85,9 @@ const ResumeAnalyzer = () => {
       );
 
       setResponse(data);
-      alert("Resume analyzed successfully!");
+      toast.success("Resume analyzed successfully!");
     } catch (error: any) {
-      alert(error.response?.data?.message || "Failed to analyze resume");
+      toast.error(error.response?.data?.message || "Failed to analyze resume");
       console.log(error);
     } finally {
       setLoading(false);
