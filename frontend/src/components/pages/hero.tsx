@@ -105,7 +105,7 @@ const Hero = () => {
             {/* Image card */}
             <div className='relative rounded-2xl overflow-hidden shadow-2xl border-4 border-background/80 aspect-4/3'>
               <img
-                src='/about.webp'
+                src='/hero.webp'
                 alt='HireNest platform preview'
                 className='w-full h-full object-cover object-center transform transition-transform duration-500 group-hover:scale-105'
               />

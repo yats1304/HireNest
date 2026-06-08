@@ -1,6 +1,6 @@
 "use client"
 
-import { CareerGuideResponse, utils_service } from '@/types/types'
+import { CareerGuideResponse, utils_service } from '@/types'
 import axios from 'axios'
 import { ArrowRight, BookOpen, Briefcase, Lightbulb, Loader2, Sparkles, Target, TrendingUp, X } from 'lucide-react'
 import { useState } from 'react'
@@ -155,7 +155,7 @@ const CareerGuide = () => {
                         : 
                         <>
                             <DialogHeader>
-                                <DialogTitle className='text-xl font-semibold flex items-center gap-2'>
+                                <DialogTitle className='text-2xl font-semibold flex items-center gap-2'>
                                     <Target className='text-blue-600'/>
                                     Your Personalized Career Guide
                                 </DialogTitle>

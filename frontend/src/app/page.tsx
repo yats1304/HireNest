@@ -1,4 +1,4 @@
-import { CareerGuide, Hero } from '@/components/pages';
+import { CareerGuide, Hero, ResumeAnalyzer } from '@/components/pages';
 import React from 'react'
 
 const homes = () => {
@@ -6,6 +6,7 @@ const homes = () => {
     <div>
       <Hero/>
       <CareerGuide/>
+      <ResumeAnalyzer/>
     </div>
   )
 }
