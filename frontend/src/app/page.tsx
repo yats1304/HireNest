@@ -1,7 +1,13 @@
+"use client"
+
+import Loading from '@/components/loading';
 import { CareerGuide, Hero, ResumeAnalyzer } from '@/components/pages';
+import { useAppData } from '@/context/AppContext';
 import React from 'react'
 
-const homes = () => {
+const Homes = () => {
+  const { loading } = useAppData()
+  if (loading) return <Loading/>
   return (
     <div>
       <Hero/>
@@ -11,4 +17,4 @@ const homes = () => {
   )
 }
 
-export default homes;
+export default Homes;

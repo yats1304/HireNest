@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { ArrowRight, Lock, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import Loading from '@/components/loading';
+import { Input } from '@/components/ui/input';
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,6 +19,8 @@ const LoginPage = () => {
   const [btnLoading, setBtnLoading] = useState(false);
 
   const {isAuth, setUser, loading, setIsAuth} = useAppData()
+
+  if (loading) return <Loading/>
 
   if(isAuth) return redirect("/");
 
@@ -61,8 +65,8 @@ const LoginPage = () => {
                 <Label htmlFor='email' className='text-sm font-medium'>Email Address</Label>
                 <div className="relative">
                   <Mail className='icon-style'/>
-                  <input id='email' type='email' placeholder='you@example.com' value={email}
-                  onChange={e=>setEmail(e.target.value)} required className='w-full pl-10 h-11 border rounded-md px-3 bg-transparent focus:outline-none focus:ring-2 focus:ring-ring'/>
+                  <Input id='email' type='email' placeholder='you@example.com' value={email}
+                  onChange={e=>setEmail(e.target.value)} required className='pl-10 h-11'/>
                 </div>
               </div>
 
@@ -70,8 +74,8 @@ const LoginPage = () => {
                 <Label htmlFor='password' className='text-sm font-medium'>Password</Label>
                 <div className="relative">
                   <Lock className='icon-style'/>
-                  <input id='password' type='password' placeholder='••••••••' value={password}
-                  onChange={e=>setPassword(e.target.value)} required className='w-full pl-10 h-11 border rounded-md px-3 bg-transparent focus:outline-none focus:ring-2 focus:ring-ring'/>
+                  <Input id='password' type='password' placeholder='••••••••' value={password}
+                  onChange={e=>setPassword(e.target.value)} required className='pl-10 h-11'/>
                 </div>
               </div>
 
