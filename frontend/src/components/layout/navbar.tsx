@@ -12,7 +12,7 @@ import { useAppData } from '@/context/AppContext';
 const Navbar = () => {
     const [isOpen, setisOpen] = useState(false);
 
-    const { isAuth, user, setIsAuth, setUser, loading } = useAppData()
+    const { isAuth, user, setIsAuth, setUser, loading, logoutUser } = useAppData()
 
     const toggleMenu = () =>{
         setisOpen(!isOpen)
@@ -20,7 +20,7 @@ const Navbar = () => {
 
 
     const logoutHandler = () =>{
-
+        logoutUser()
     }
   return (
     <nav className='z-50 sticky top-0 bg-background/80 border-b backdrop-blur-md shadow-sm'>
@@ -79,8 +79,8 @@ const Navbar = () => {
                                 
                                 <PopoverContent className="w-56 p-2" align="end">
                                     <div className='px-3 py-2 mb-2 border-b'>
-                                        <p className='text-sm front-semibold'>Yatish</p>
-                                        <p className='text-xs opacity-60 truncate'>yatish@gmail.com</p>
+                                        <p className='text-sm front-semibold'>{user && user.name}</p>
+                                        <p className='text-xs opacity-60 truncate'>{user && user.email}</p>
                                     </div>
                                         <Link href={"/account"}>
                                             <Button className="w-full justify-start gap-2" variant={"ghost"}>

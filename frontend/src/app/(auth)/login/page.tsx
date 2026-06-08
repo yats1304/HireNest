@@ -37,7 +37,7 @@ const LoginPage = () => {
         secure: true,
         path: "/",
       });
-      setUser(data.user);
+      setUser(data.userObject);
       setIsAuth(true);
       
     } catch (error: any) {

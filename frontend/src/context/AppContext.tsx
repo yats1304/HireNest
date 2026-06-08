@@ -2,7 +2,7 @@
 
 import { AppContextType, AppProviderProps, User } from "@/types"
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import axios from "axios";
 
@@ -40,11 +40,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({children}) =>{
         }
     }
 
+    async function logoutUser() {
+        Cookies.set("token", "");
+        setUser(null)
+        setIsAuth(false)
+        toast.success("Logged out successfully")
+    }
+
     useEffect(()=> {
         fetchUser()
     }, [])
 
-    return <AppContext.Provider value={{ user, loading, btnLoading, setUser, isAuth,setIsAuth, setLoading}}>
+    return <AppContext.Provider value={{ user, loading, btnLoading, setUser, isAuth,setIsAuth, setLoading, logoutUser}}>
             {children}
             <Toaster/>
         </AppContext.Provider>
