@@ -11,4 +11,7 @@ export type {
   AppContextType,
   AppProviderProps,
   AccountProps,
+  Job,
+  Company,
+  Application,
 } from './types'
