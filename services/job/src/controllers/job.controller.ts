@@ -7,137 +7,182 @@ import { TryCatch } from "../utils/tryCatch.js";
 import { applicationStatusUpdateTemplate } from "../template.js";
 import { publishToTopic } from "../producer.js";
 
-export const createCompany = TryCatch(async(req:AuthenticatedRequest,res)=>{
-    const user = req.user
+export const createCompany = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
 
-    if(!user){
-        throw new ErrorHandler(401,"Authentication required!")
+    if (!user) {
+      throw new ErrorHandler(401, "Authentication required!");
     }
 
-    if(user.role !== "recruiter"){
-        throw new ErrorHandler(403, "Forbidden: Only recruiter can create a company")
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(
+        403,
+        "Forbidden: Only recruiter can create a company",
+      );
     }
 
-    const {name, description, website} =req.body;
+    const { name, description, website } = req.body;
 
-    if(!name || !description || !website){
-        throw new ErrorHandler(400, "All fields required!")
+    if (!name || !description || !website) {
+      throw new ErrorHandler(400, "All fields required!");
     }
 
-    const existingCompany = await sql`SELECT company_id From companies WHERE name = ${name}`;
+    const existingCompany =
+      await sql`SELECT company_id From companies WHERE name = ${name}`;
 
-    if(existingCompany.length > 0){
-        throw new ErrorHandler(409, `A company with a name ${name} already exists!`)
+    if (existingCompany.length > 0) {
+      throw new ErrorHandler(
+        409,
+        `A company with a name ${name} already exists!`,
+      );
     }
 
     const file = req.file;
 
-    if(!file){
-        throw new ErrorHandler(400, "Company logo file is required!")
+    if (!file) {
+      throw new ErrorHandler(400, "Company logo file is required!");
     }
 
-    const fileBuffer = getBuffer(file)
+    const fileBuffer = getBuffer(file);
 
-    if(!fileBuffer || !fileBuffer.content){
-        throw new ErrorHandler(500, "Failed to create file buffer!")
+    if (!fileBuffer || !fileBuffer.content) {
+      throw new ErrorHandler(500, "Failed to create file buffer!");
     }
 
-    const { data } = await axios.post<{url: string, public_id: string}>(`${process.env.UPLOAD_SERVICE}/api/utils/upload`,
-        {buffer: fileBuffer.content}
-    )
+    const { data } = await axios.post<{ url: string; public_id: string }>(
+      `${process.env.UPLOAD_SERVICE}/api/utils/upload`,
+      { buffer: fileBuffer.content },
+    );
 
-    const [newCompany] = await sql`INSERT INTO companies (name, description, website, logo, logo_public_id,
+    const [newCompany] =
+      await sql`INSERT INTO companies (name, description, website, logo, logo_public_id,
     recruiter_id) VALUES (${name}, ${description}, ${website}, ${data.url}, ${data.public_id},
      ${req.user?.user_id}) RETURNING *`;
 
     res.json({
-        message: "Company created successfully!",
-        company: newCompany
-    })
-})
+      message: "Company created successfully!",
+      company: newCompany,
+    });
+  },
+);
 
-export const deleteCompany = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const user = req.user
+export const deleteCompany = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
 
-    const {companyId} = req.params
+    const { companyId } = req.params;
 
-    const [company] = await sql`SELECT logo_public_id FROM companies WHERE company_id = ${companyId}
+    const [company] =
+      await sql`SELECT logo_public_id FROM companies WHERE company_id = ${companyId}
     AND recruiter_id = ${user?.user_id}`;
 
-    if(!company){
-        throw new ErrorHandler(404, "Company not found or you're not authorized to delete it")
+    if (!company) {
+      throw new ErrorHandler(
+        404,
+        "Company not found or you're not authorized to delete it",
+      );
     }
 
     await sql`DELETE FROM companies WHERE company_id = ${companyId}`;
 
     res.json({
-        message: "Company and all associated jobs are deleted!"
-    })
-})
+      message: "Company and all associated jobs are deleted!",
+    });
+  },
+);
 
-export const createJob = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const user = req.user
+export const createJob = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
 
-     if(!user){
-        throw new ErrorHandler(401,"Authentication required!")
-    }
+  if (!user) {
+    throw new ErrorHandler(401, "Authentication required!");
+  }
 
-    if(user.role !== "recruiter"){
-        throw new ErrorHandler(403, "Forbidden: Only recruiter can create a company")
-    }
+  if (user.role !== "recruiter") {
+    throw new ErrorHandler(
+      403,
+      "Forbidden: Only recruiter can create a company",
+    );
+  }
 
-    const { title, description, salary, location, role, job_type, work_location, 
-    company_id, openings} = req.body
+  const {
+    title,
+    description,
+    salary,
+    location,
+    role,
+    job_type,
+    work_location,
+    company_id,
+    openings,
+  } = req.body;
 
-    if(!title || !description || !salary || !location || !role || !openings){
-        throw new ErrorHandler(400, "All fields required!")
-    }
+  if (!title || !description || !salary || !location || !role || !openings) {
+    throw new ErrorHandler(400, "All fields required!");
+  }
 
-    const [company] = await sql`SELECT company_id FROM companies WHERE company_id = ${company_id} AND recruiter_id = ${user.user_id}`
+  const [company] =
+    await sql`SELECT company_id FROM companies WHERE company_id = ${company_id} AND recruiter_id = ${user.user_id}`;
 
-    if(!company){
-        throw new ErrorHandler(404, "Company not found!")
-    }
+  if (!company) {
+    throw new ErrorHandler(404, "Company not found!");
+  }
 
-    const [newJob] = await sql`INSERT INTO jobs (title, description, salary, location, role, job_type, work_location, company_id, 
+  const [newJob] =
+    await sql`INSERT INTO jobs (title, description, salary, location, role, job_type, work_location, company_id, 
     posted_by_recruiter_id, openings) VALUES (${title}, ${description}, ${salary}, ${location}, ${role}, ${job_type}, ${work_location},
     ${company_id}, ${user.user_id}, ${openings}) RETURNING *`;
 
-    res.json({
-        message: "Job posted successfully!",
-        job: newJob
-    })
-})
+  res.json({
+    message: "Job posted successfully!",
+    job: newJob,
+  });
+});
 
-export const updateJob = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const user = req.user
+export const updateJob = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
 
-     if(!user){
-        throw new ErrorHandler(401,"Authentication required!")
-    }
+  if (!user) {
+    throw new ErrorHandler(401, "Authentication required!");
+  }
 
-    if(user.role !== "recruiter"){
-        throw new ErrorHandler(403, "Forbidden: Only recruiter can create a company")
-    }
+  if (user.role !== "recruiter") {
+    throw new ErrorHandler(
+      403,
+      "Forbidden: Only recruiter can create a company",
+    );
+  }
 
-    const { title, description, salary, location, role, job_type, work_location, 
-    company_id, openings, is_active} = req.body
+  const {
+    title,
+    description,
+    salary,
+    location,
+    role,
+    job_type,
+    work_location,
+    company_id,
+    openings,
+    is_active,
+  } = req.body;
 
-    if(!title || !description || !salary || !location || !role || !openings){
-        throw new ErrorHandler(400, "All fields required!")
-    }
+  if (!title || !description || !salary || !location || !role || !openings) {
+    throw new ErrorHandler(400, "All fields required!");
+  }
 
-    const [existingJob] = await sql`SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${req.params.jobId}`;
+  const [existingJob] =
+    await sql`SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${req.params.jobId}`;
 
-    if(!existingJob){
-        throw new ErrorHandler(404, "Job not found!")
-    }
+  if (!existingJob) {
+    throw new ErrorHandler(404, "Job not found!");
+  }
 
-    if(existingJob.posted_by_recruiter_id !== user.user_id){
-        throw new ErrorHandler(403, "Forbidden: You are not allowed!")
-    }
+  if (existingJob.posted_by_recruiter_id !== user.user_id) {
+    throw new ErrorHandler(403, "Forbidden: You are not allowed!");
+  }
 
-    const [updatedJob] = await sql`UPDATE jobs SET
+  const [updatedJob] = await sql`UPDATE jobs SET
         title = ${title},
         description = ${description},
         salary = ${salary},
@@ -151,23 +196,27 @@ export const updateJob = TryCatch(async(req:AuthenticatedRequest, res)=>{
         RETURNING *;
         `;
 
-    res.json({
-        message: "Job updated successfully!",
-        job: updatedJob
-    })
-})
+  res.json({
+    message: "Job updated successfully!",
+    job: updatedJob,
+  });
+});
 
-export const getAllCompanies = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const companies = await sql`SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id}`
+export const getAllCompanies = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const companies =
+      await sql`SELECT * FROM companies WHERE recruiter_id = ${req.user?.user_id}`;
 
-    res.json(companies)
-})
+    res.json(companies);
+  },
+);
 
-export const getCompanyDetails = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const {id} = req.params
+export const getCompanyDetails = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const { id } = req.params;
 
-    if(!id){
-        throw new ErrorHandler(400, "Company Id is required!")
+    if (!id) {
+      throw new ErrorHandler(400, "Company Id is required!");
     }
 
     const [companyData] = await sql`
@@ -186,128 +235,137 @@ export const getCompanyDetails = TryCatch(async(req:AuthenticatedRequest, res)=>
         GROUP BY c.company_id;
         `;
 
-        if(!companyData){
-            throw new ErrorHandler(404, "Company not found!")
-        }
-
-        res.json(companyData)
-})
-
-export const getAllActiveJobs = TryCatch(async(req, res)=>{
-    const {title, location} = req.params as {
-        title: string,
-        location: string
+    if (!companyData) {
+      throw new ErrorHandler(404, "Company not found!");
     }
 
-    let queryString = `SELECT j.job_id, j.title, j.description, j.salary, j.location, j.job_type,
+    res.json(companyData);
+  },
+);
+
+export const getAllActiveJobs = TryCatch(async (req, res) => {
+  const { title, location } = req.params as {
+    title: string;
+    location: string;
+  };
+
+  let queryString = `SELECT j.job_id, j.title, j.description, j.salary, j.location, j.job_type,
     j.role, j.work_location, j.created_at, c.name AS company_name, c.logo AS company_logo, c.company_id
     AS company_id FROM jobs j JOIN companies c ON j.company_id = c.company_id WHERE j.is_active = true`;
-    
-    const values = [];
 
-    let paramsIndex = 1
+  const values = [];
 
-    if(title){
-        queryString += ` AND j.title ILIKE $${paramsIndex}`;
-        values.push(`%${title}%`);
-        paramsIndex++
+  let paramsIndex = 1;
+
+  if (title) {
+    queryString += ` AND j.title ILIKE $${paramsIndex}`;
+    values.push(`%${title}%`);
+    paramsIndex++;
+  }
+
+  if (location) {
+    queryString += ` AND j.location ILIKE $${paramsIndex}`;
+    values.push(`%${location}%`);
+    paramsIndex++;
+  }
+
+  queryString += " ORDER BY j.created_at DESC";
+
+  const jobs = (await sql.query(queryString, values)) as any[];
+
+  res.json(jobs);
+});
+
+export const getSingleJob = TryCatch(async (req, res) => {
+  const [job] =
+    await sql`SELECT * FROM jobs WHERE job_id = ${req.params.jobId}`;
+
+  res.json(job);
+});
+
+export const getAllApplicationsForJob = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
+
+    if (!user) {
+      throw new ErrorHandler(401, "Authentication required!");
     }
 
-    if(location){
-        queryString += ` AND j.location ILIKE $${paramsIndex}`;
-        values.push(`%${location}%`);
-        paramsIndex++
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(403, "Forbidden: Only recruiter can access");
     }
 
-    queryString += " ORDER BY j.created_at DESC";
+    const { jobId } = req.params;
 
-    const jobs = await sql.query(queryString,values) as any[]
+    const [job] =
+      await sql`SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${jobId}`;
 
-    res.json(jobs)
-
-})
-
-export const getSingleJob = TryCatch(async(req,res)=>{
-    const [job] = await sql`SELECT * FROM jobs WHERE job_id = ${req.params.jobId}`
-
-    res.json(job)
-})
-
-export const getAllApplicationsForJob = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const user = req.user
-
-     if(!user){
-        throw new ErrorHandler(401,"Authentication required!")
+    if (!job) {
+      throw new ErrorHandler(403, "Job not found!");
     }
 
-    if(user.role !== "recruiter"){
-        throw new ErrorHandler(403, "Forbidden: Only recruiter can access")
+    if (job.posted_by_recruiter_id !== user.user_id) {
+      throw new ErrorHandler(403, "Forbidden: You are not allowed");
     }
 
-    const {jobId} = req.params
-
-    const [job] = await sql`SELECT posted_by_recruiter_id FROM jobs WHERE job_id = ${jobId}`;
-
-    if(!job){
-        throw new ErrorHandler(403, "Job not found!")
-    }
-
-    if(job.posted_by_recruiter_id !== user.user_id) {
-        throw new ErrorHandler(403, "Forbidden: You are not allowed")
-    }
-
-    const [applications] = await sql`SELECT * FROM applications WHERE job_id = ${jobId} ORDER BY subscribed DESC, 
+    const [applications] =
+      await sql`SELECT * FROM applications WHERE job_id = ${jobId} ORDER BY subscribed DESC, 
     applied_at ASC`;
 
-    res.json(applications)
+    res.json(applications);
+  },
+);
 
-})
+export const updateApplication = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const user = req.user;
 
-export const updateApplication = TryCatch(async(req:AuthenticatedRequest, res)=>{
-    const user = req.user
-
-     if(!user){
-        throw new ErrorHandler(401,"Authentication required!")
+    if (!user) {
+      throw new ErrorHandler(401, "Authentication required!");
     }
 
-    if(user.role !== "recruiter"){
-        throw new ErrorHandler(403, "Forbidden: Only recruiter can access")
+    if (user.role !== "recruiter") {
+      throw new ErrorHandler(403, "Forbidden: Only recruiter can access");
     }
 
-    const {id} = req.params;
+    const { id } = req.params;
 
-    const [application] = await sql`SELECT * FROM applications WHERE application_id = ${id}`;
+    const [application] =
+      await sql`SELECT * FROM applications WHERE application_id = ${id}`;
 
-    if(!application){
-        throw new ErrorHandler(404, "Application not found!")
+    if (!application) {
+      throw new ErrorHandler(404, "Application not found!");
     }
 
-    const [job] = await sql`SELECT posted_by_recruiter_id, title FROM jobs WHERE job_id = ${application.job_id}`;
+    const [job] =
+      await sql`SELECT posted_by_recruiter_id, title FROM jobs WHERE job_id = ${application.job_id}`;
 
-    if(!job){
-        throw new ErrorHandler(404, "No job with this id")
+    if (!job) {
+      throw new ErrorHandler(404, "No job with this id");
     }
 
-    if(job.posted_by_recruiter_id !== user.user_id){
-        throw new ErrorHandler(403, "Forbidden: You are not allowed!")
+    if (job.posted_by_recruiter_id !== user.user_id) {
+      throw new ErrorHandler(403, "Forbidden: You are not allowed!");
     }
 
-    const [updatedApplication] = await sql`UPDATE applications SET status = ${req.body.status} WHERE
+    const [updatedApplication] =
+      await sql`UPDATE applications SET status = ${req.body.status} WHERE
     application_id = ${id} RETURNING *`;
 
     const message = {
-        to: application.applicant_email,
-        subject: "Application Update - HireNest",
-        html: applicationStatusUpdateTemplate(job.title)
-    }
+      to: application.applicant_email,
+      subject: "Application Update - HireNest",
+      html: applicationStatusUpdateTemplate(job.title),
+    };
 
-    publishToTopic("send-mail", message).catch(error=>{
-        console.error("Failed to publish message to kafka", error)
-    })
+    publishToTopic("send-mail", message).catch((error) => {
+      console.error("Failed to publish message to kafka", error);
+    });
 
     res.json({
-        message: "Application updated",
-        job,
-        updatedApplication
-    })
-})
+      message: "Application updated",
+      job,
+      updatedApplication,
+    });
+  },
+);

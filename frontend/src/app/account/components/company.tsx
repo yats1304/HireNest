@@ -37,6 +37,7 @@ const Company = () => {
   const [logo, setLogo] = useState<File | null>(null)
   const [btnLoading, setBtnLoading] = useState(false)
   const [companies, setCompanies] = useState<CompanyType[]>([])
+  const [companiesLoading, setCompaniesLoading] = useState(false)
 
   const clearData = () => {
     setName('')
@@ -49,6 +50,7 @@ const Company = () => {
 
   async function fetCompanies() {
     try {
+      setCompaniesLoading(true)
       const { data } = await axios.get(`${job_service}/api/job/company/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -58,6 +60,8 @@ const Company = () => {
       setCompanies(data)
     } catch (error: any) {
       toast.error(error)
+    } finally {
+      setCompaniesLoading(false)
     }
   }
 
@@ -92,10 +96,9 @@ const Company = () => {
   }
 
   async function deleteCompany(id: string) {
-    setBtnLoading(true)
-
     if (confirm('Are you sure you want to delete this company')) {
       try {
+        setBtnLoading(true)
         const { data } = await axios.delete(`${job_service}/api/job/company/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -116,6 +119,7 @@ const Company = () => {
   }, [])
 
   if (loading) return <Loading />
+  if (companiesLoading) return <Loading />
 
   return (
     <div className='max-w-7xl mx-auto px-4 py-6'>
