@@ -4,7 +4,7 @@ import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { job_service, useAppData } from '@/context/AppContext'
-import { Job } from '@/types'
+import { Application, Job } from '@/types'
 import axios from 'axios'
 import {
   ArrowLeft,
@@ -18,6 +18,9 @@ import {
 } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
+import toast from 'react-hot-toast'
+import Link from 'next/link'
 
 const JobPage = () => {
   const { user, isAuth, applyJob, applications, btnLoading } = useAppData()
@@ -54,6 +57,62 @@ const JobPage = () => {
   useEffect(() => {
     fetchSingleJob()
   }, [id])
+
+  const [jobApplications, setJobApplications] = useState<Application[]>([])
+
+  const token = Cookies.get('token')
+
+  async function fetchJobApplications() {
+    setLoading(true)
+    try {
+      const { data } = await axios.get(`${job_service}/api/job/applications/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      setJobApplications(data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (user && job && user.user_id === job.posted_by_recruiter_id) {
+      fetchJobApplications()
+    }
+  }, [user, job])
+
+  const [filterStatus, setFilterStatus] = useState('All')
+
+  const filterApplications =
+    filterStatus === 'All'
+      ? jobApplications
+      : jobApplications.filter((app) => app.status === filterStatus)
+
+  const [value, setValue] = useState('')
+
+  const updateApplicationHandler = async (id: number) => {
+    if (value === '') return toast.error('Please give valid value')
+
+    try {
+      const { data } = await axios.put(
+        `${job_service}/api/job/application/update/${id}`,
+        { status: value },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      toast.success(data.message)
+      fetchJobApplications()
+    } catch (error: any) {
+      toast.error(error.response.data.message)
+    }
+  }
 
   if (loading) return <Loading />
 
@@ -180,6 +239,101 @@ const JobPage = () => {
               </div>
             </div>
           </Card>
+        </div>
+      )}
+
+      {user && job && user.user_id === job.posted_by_recruiter_id && (
+        <div className='w-[90%] md:w-2/3 container mx-auto mt-8 mb-8'>
+          <div className='flex items-center justify-between mb-4 flex-wrap gap-3'>
+            <h2 className='text-2xl font-bold'>All Applications</h2>
+            <div className='flex items-center gap-2'>
+              <label htmlFor='filter-status' className='text-sm font-medium'>
+                Filter:
+              </label>
+              <select
+                id='filter-status'
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className='p-2 border-2 border-gray-300 rounded-md bg-background'
+              >
+                <option value='All'>All Status</option>
+                <option value='Submitted'>Submitted</option>
+                <option value='Hired'>Hired</option>
+                <option value='Rejected'>Rejected</option>
+              </select>
+            </div>
+          </div>
+          {jobApplications && jobApplications.length > 0 ? (
+            <>
+              <div className='space-y-4'>
+                {filterApplications.map((e) => (
+                  <div className='p-4 rounded-lg border-2 bg-background' key={e.applicant_id}>
+                    <div className='flex items-center justify-between mb-3'>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium 
+                            ${
+                              e.status === 'Hired'
+                                ? 'bg-green-100 dark:bg-green-900/30 text-green-600'
+                                : e.status === 'Rejected'
+                                  ? 'bg-red-100 dark:bg-red-900/30 text-red-600'
+                                  : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600'
+                            }`}
+                      >
+                        {e.status}
+                      </span>
+                    </div>
+
+                    <div className='flex gap-3 mb-3'>
+                      <Link
+                        target='_blank'
+                        href={e.resume}
+                        className='text-blue-500 hover:underline text-sm'
+                      >
+                        View Resume
+                      </Link>
+
+                      <Link
+                        target='_blank'
+                        href={`/account/${e.applicant_id}`}
+                        className='text-blue-500 hover:underline text-sm'
+                      >
+                        View Profile
+                      </Link>
+                    </div>
+
+                    {/* update status */}
+                    <div className='flex gap-2 pt-2 border-t'>
+                      <select
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        className='flex-1 p-2 border-2 border-gray-300 rounded-md bg-background'
+                      >
+                        <option value=''>Update Status</option>
+                        <option value='Submitted'>Submitted</option>
+                        <option value='Hired'>Hired</option>
+                        <option value='Rejected'>Rejected</option>
+                      </select>
+                      <Button
+                        disabled={btnLoading}
+                        onClick={() => updateApplicationHandler(e.application_id)}
+                      >
+                        Update
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {filterApplications.length === 0 && (
+                <p className='text-center py-8 opacity-70'>
+                  No application with status {filterStatus}
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className='text-center py-8 opacity-70'>No application yet.</p>
+            </>
+          )}
         </div>
       )}
     </div>

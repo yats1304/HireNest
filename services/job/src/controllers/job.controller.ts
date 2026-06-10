@@ -308,7 +308,7 @@ export const getAllApplicationsForJob = TryCatch(
       throw new ErrorHandler(403, "Forbidden: You are not allowed");
     }
 
-    const [applications] =
+    const applications =
       await sql`SELECT * FROM applications WHERE job_id = ${jobId} ORDER BY subscribed DESC, 
     applied_at ASC`;
 
