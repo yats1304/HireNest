@@ -103,7 +103,7 @@ export const applicationStatusUpdateTemplate = (jobTitle: string) => {
                 </p>
 
                 <p class="text-muted">
-                  You can check your application status at HireHeaven.
+                  You can check your application status at HireNest.
                 </p>
 
                 <p class="text-muted">

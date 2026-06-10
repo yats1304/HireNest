@@ -1,6 +1,6 @@
 'use client'
 
-import { AppContextType, AppProviderProps, User } from '@/types'
+import { AppContextType, Application, AppProviderProps, User } from '@/types'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import Cookies from 'js-cookie'
@@ -145,8 +145,44 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
+  async function applyJob(job_id: number) {
+    setBtnLoading(true)
+    try {
+      const { data } = await axios.post(
+        `${user_service}/api/user/apply/job`,
+        { job_id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      toast.success(data.message)
+    } catch (error: any) {
+      toast.error(error.response.data.message)
+    } finally {
+      setBtnLoading(false)
+    }
+  }
+
+  const [applications, setApplications] = useState<Application[] | null>(null)
+
+  async function fetchApplication() {
+    try {
+      const { data } = await axios.get(`${user_service}/api/user/applications/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setApplications(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     fetchUser()
+    fetchApplication()
   }, [])
 
   return (
@@ -165,6 +201,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateUser,
         addSkill,
         removeSkill,
+        applyJob,
+        applications,
+        fetchApplication,
       }}
     >
       {children}

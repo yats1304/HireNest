@@ -13,7 +13,7 @@ const About = () => {
           <div className='flex justify-center mb-8'>
             <img
               src='/about.webp'
-              alt='About HireHeaven'
+              alt='About HireNest'
               className='w-full max-w-160 rounded-2xl shadow-lg'
             />
           </div>
@@ -43,7 +43,7 @@ const About = () => {
             </h2>
 
             <p className='text-lg md:text-xl opacity-80'>
-              Join thousands of successful job seekers on HireHeaven
+              Join thousands of successful job seekers on HirNest
             </p>
 
             <div className='pt-4'>

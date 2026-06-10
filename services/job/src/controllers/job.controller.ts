@@ -244,7 +244,7 @@ export const getCompanyDetails = TryCatch(
 );
 
 export const getAllActiveJobs = TryCatch(async (req, res) => {
-  const { title, location } = req.params as {
+  const { title, location } = req.query as {
     title: string;
     location: string;
   };

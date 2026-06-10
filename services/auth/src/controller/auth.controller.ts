@@ -4,190 +4,208 @@ import { sql } from "../utils/db.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import { TryCatch } from "../utils/tryCatch.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import { forgotPasswordTemplate } from "../template.js";
 import { publishToTopic } from "../producer.js";
 import { redisClient } from "../app.js";
 
-export const registerUser = TryCatch(async(req,res,next)=>{
-    const {name, email, password, phoneNumber, role, bio} = req.body;
+export const registerUser = TryCatch(async (req, res, next) => {
+  const { name, email, password, phoneNumber, role, bio } = req.body;
 
-    if(!name || !email || !password || !phoneNumber || !role){
-        throw new ErrorHandler(400, "Please fill the details")
-    }
+  if (!name || !email || !password || !phoneNumber || !role) {
+    throw new ErrorHandler(400, "Please fill the details");
+  }
 
-    const existingUsers = await sql`SELECT user_id FROM users WHERE email = ${email}`;
+  const existingUsers =
+    await sql`SELECT user_id FROM users WHERE email = ${email}`;
 
-    if(existingUsers.length > 0){
-        throw new ErrorHandler(409, "User with this email already exists!")
-    }
+  if (existingUsers.length > 0) {
+    throw new ErrorHandler(409, "User with this email already exists!");
+  }
 
-    const hashPassword = await bcrypt.hash(password, 10)
+  const hashPassword = await bcrypt.hash(password, 10);
 
-    let registeredUser;
+  let registeredUser;
 
-    if (role === "recruiter"){
-        const [user] = 
-            await sql`INSERT INTO users (name, email, password, phone_number, role) VALUES (${name}, ${email}, ${hashPassword},
+  if (role === "recruiter") {
+    const [user] =
+      await sql`INSERT INTO users (name, email, password, phone_number, role) VALUES (${name}, ${email}, ${hashPassword},
             ${phoneNumber}, ${role}) RETURNING user_id, name, email, phone_number, role, created_at`;
 
-        registeredUser = user
-    } else if (role === "jobseeker"){
-        const file = req.file
+    registeredUser = user;
+  } else if (role === "jobseeker") {
+    const file = req.file;
 
-        if (!file){
-            throw new ErrorHandler(400, "Resume file is required for jobseekers")
-        }
+    if (!file) {
+      throw new ErrorHandler(400, "Resume file is required for jobseekers");
+    }
 
-        const fileBuffer = getBuffer(file)
+    const fileBuffer = getBuffer(file);
 
-        if(!fileBuffer || !fileBuffer.content){
-            throw new ErrorHandler(500, "Failed to generate buffer")
-        }
+    if (!fileBuffer || !fileBuffer.content) {
+      throw new ErrorHandler(500, "Failed to generate buffer");
+    }
 
-        const {data} = await axios.post(`${process.env.UPLOAD_SERVICE}/api/utils/upload`, {buffer: fileBuffer.content})
+    const { data } = await axios.post(
+      `${process.env.UPLOAD_SERVICE}/api/utils/upload`,
+      { buffer: fileBuffer.content },
+    );
 
-        const [user] = 
-            await sql`INSERT INTO users (name, email, password, phone_number, role, bio, resume, resume_public_id) VALUES 
+    const [user] =
+      await sql`INSERT INTO users (name, email, password, phone_number, role, bio, resume, resume_public_id) VALUES 
             (${name}, ${email}, ${hashPassword},${phoneNumber}, ${role}, ${bio}, ${data.url}, ${data.public_id} ) 
             RETURNING user_id, name, email, phone_number, role, bio, resume, created_at`;
 
-        registeredUser = user
-    }
+    registeredUser = user;
+  }
 
-    const token = jwt.sign({id: registeredUser?.user_id}, process.env.JWT_SECRET as string, {
-        expiresIn: "15d"
-    })
+  const token = jwt.sign(
+    { id: registeredUser?.user_id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "15d",
+    },
+  );
 
-    res.json({
-        message: "User Registered!",
-        registeredUser,
-        token
-    });
-})
+  res.json({
+    message: "User Registered!",
+    registeredUser,
+    token,
+  });
+});
 
-export const loginUser = TryCatch(async (req,res,next) => {
-    const {email, password} = req.body;
+export const loginUser = TryCatch(async (req, res, next) => {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-        throw new ErrorHandler(400, "Please fill all details!")
-    }
+  if (!email || !password) {
+    throw new ErrorHandler(400, "Please fill all details!");
+  }
 
-    const user = await sql`
+  const user = await sql`
     SELECT u.user_id, u.name, u.email, u.password, u.phone_number, u.role, u.bio, u.resume, u.profile_pic, u.subscription, ARRAY_AGG(s.name) FILTER (WHERE s.name IS NOT NULL) as skills
     FROM users u
     LEFT JOIN user_skills us ON u.user_id = us.user_id
     LEFT JOIN skills s ON us.skill_id = s.skill_id
     WHERE u.email = ${email}
     GROUP BY u.user_id;
-    `
+    `;
 
-    if (user.length === 0){
-        throw new ErrorHandler(400, "Invalid credentials")
-    }
+  if (user.length === 0) {
+    throw new ErrorHandler(400, "Invalid credentials");
+  }
 
-    const userObject = user[0]
+  const userObject = user[0];
 
-    const matchPassword = await bcrypt.compare(password, userObject.password)
+  const matchPassword = await bcrypt.compare(password, userObject.password);
 
-    if(!matchPassword){
-        throw new ErrorHandler(400, "Invalid credentials")
-    }
+  if (!matchPassword) {
+    throw new ErrorHandler(400, "Invalid credentials");
+  }
 
-    userObject.skills = userObject.skills || []
+  userObject.skills = userObject.skills || [];
 
-    delete userObject.password
+  delete userObject.password;
 
-    const token = jwt.sign({id: userObject?.user_id}, process.env.JWT_SECRET as string, {
-        expiresIn: "15d"
-    })
+  const token = jwt.sign(
+    { id: userObject?.user_id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "15d",
+    },
+  );
 
-    res.json({
-        message: "User Loggedin!",
-        userObject,
-        token
+  res.json({
+    message: "User Loggedin!",
+    userObject,
+    token,
+  });
+});
+
+export const forgotPassword = TryCatch(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ErrorHandler(400, "Email is required!");
+  }
+
+  const users =
+    await sql`SELECT user_id, email FROM users WHERE email = ${email}`;
+
+  if (users.length === 0) {
+    return res.json({
+      message: "If that email exists, we have sent a reset link",
     });
-})
+  }
 
-export const forgotPassword = TryCatch(async(req,res,next)=>{
-    const {email} = req.body
+  const user = users[0];
 
-    if(!email){
-        throw new ErrorHandler(400,"Email is required!")
-    }
+  const resetToken = jwt.sign(
+    {
+      email: user.email,
+      type: "reset",
+    },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "15m" },
+  );
 
-    const users = await sql`SELECT user_id, email FROM users WHERE email = ${email}`
+  const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`;
 
-    if(users.length === 0){
-        return res.json({
-            message: "If that email exists, we have sent a reset link"
-        })
-    }
+  await redisClient.set(`forgot:${email}`, resetToken, {
+    EX: 900,
+  });
 
-    const user = users[0]
+  const message = {
+    to: email,
+    subject: "RESET Your Password - HireNest",
+    html: forgotPasswordTemplate(resetLink),
+  };
 
-    const resetToken = jwt.sign({
-        email: user.email, type: "reset"
-    }, process.env.JWT_SECRET as string, {expiresIn: "15m"})
+  publishToTopic("send-mail", message).catch((error) => {
+    console.error("Failed to send message", error);
+  });
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset/${resetToken}`
+  res.json({
+    message: "If that email exists, we have sent a reset link",
+  });
+});
 
-    await redisClient.set(`forgot:${email}`, resetToken, {
-        EX: 900,
-    })
+export const resetPassword = TryCatch(async (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
 
-    const message = {
-        to: email,
-        subject : "RESET Your Password - hireheaven",
-        html: forgotPasswordTemplate(resetLink)
-    }
+  let decoded: any;
 
-    publishToTopic("send-mail",message).catch((error)=>{
-        console.error("Failed to send message", error)
-    })
+  try {
+    decoded = jwt.verify(token as string, process.env.JWT_SECRET as string);
+  } catch (error) {
+    throw new ErrorHandler(400, "Expired token");
+  }
 
-    res.json({
-        message: "If that email exists, we have sent a reset link",
-    })
-})
+  if (decoded.type !== "reset") {
+    throw new ErrorHandler(400, "Invalid token type");
+  }
 
-export const resetPassword = TryCatch(async(req,res,next)=>{
-    const {token} = req.params;
-    const {password} = req.body;
+  const email = decoded.email;
 
-    let decoded: any;
+  const storedToken = await redisClient.get(`forgot:${email}`);
 
-    try {
-        decoded = jwt.verify(token as string, process.env.JWT_SECRET as string)
-    } catch (error) {
-        throw new ErrorHandler(400, "Expired token")
-    }
+  if (!storedToken || storedToken !== token) {
+    throw new ErrorHandler(400, "Token has been expired");
+  }
 
-    if(decoded.type !== "reset"){
-        throw new ErrorHandler(400, "Invalid token type")
-    }
+  const users = await sql`SELECT user_id FROM users WHERE email = ${email}`;
 
-    const email = decoded.email
+  if (users.length === 0) {
+    throw new ErrorHandler(404, "User not found!");
+  }
 
-    const storedToken = await redisClient.get(`forgot:${email}`)
+  const user = users[0];
 
-    if(!storedToken || storedToken !== token){
-        throw new ErrorHandler(400,"Token has been expired")
-    }
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const users = await sql`SELECT user_id FROM users WHERE email = ${email}`
+  await sql`UPDATE users SET password = ${hashedPassword} WHERE user_id = ${user.user_id}`;
 
-    if(users.length === 0){
-        throw new ErrorHandler(404, "User not found!")
-    }
+  await redisClient.del(`forgot:${email}`);
 
-    const user = users[0]
-
-    const hashedPassword = await bcrypt.hash(password, 10)
-
-    await sql`UPDATE users SET password = ${hashedPassword} WHERE user_id = ${user.user_id}`
-
-    await redisClient.del(`forgot:${email}`)
-
-    res.json({ message: "Password changes successfully!"})
-})
+  res.json({ message: "Password changes successfully!" });
+});
