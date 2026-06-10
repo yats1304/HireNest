@@ -158,6 +158,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         }
       )
       toast.success(data.message)
+      await fetchApplication()
     } catch (error: any) {
       toast.error(error.response.data.message)
     } finally {
