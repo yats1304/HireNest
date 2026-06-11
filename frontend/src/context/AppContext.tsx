@@ -167,7 +167,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }
 
-  const [applications, setApplications] = useState<Application[] | null>(null)
+  const [applications, setApplications] = useState<Application[]>([])
 
   async function fetchApplication() {
     try {
