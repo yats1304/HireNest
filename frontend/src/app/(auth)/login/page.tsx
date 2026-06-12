@@ -1,6 +1,6 @@
 'use client'
 
-import { auth_service, useAppData } from '@/context/AppContext'
+import { useAppData } from '@/context/AppContext'
 import axios from 'axios'
 import { redirect } from 'next/navigation'
 import { useState } from 'react'
@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import Loading from '@/components/loading'
 import { Input } from '@/components/ui/input'
+import { auth_service } from '@/config/services'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')

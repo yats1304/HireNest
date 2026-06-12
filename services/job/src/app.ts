@@ -1,15 +1,20 @@
-import express from "express"
-import jobRoute from "./routes/job.route.js"
-import { connectKafka } from "./producer.js"
-import cors from "cors"
+import express from "express";
+import jobRoute from "./routes/job.route.js";
+import { connectKafka } from "./producer.js";
+import cors from "cors";
 
-const app = express()
+const app = express();
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  }),
+);
 
-connectKafka()
+connectKafka();
 
-app.use("/api/job",jobRoute)
+app.use("/api/job", jobRoute);
 
-export default app
+export default app;

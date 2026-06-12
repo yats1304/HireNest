@@ -2,7 +2,7 @@
 
 import { useParams } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
-import { job_service, useAppData } from '@/context/AppContext'
+import { useAppData } from '@/context/AppContext'
 import { Company, Job } from '@/types'
 import axios from 'axios'
 import Loading from '@/components/loading'
@@ -47,6 +47,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { job_service } from '@/config/services'
 
 const CompanyPage = () => {
   const { id } = useParams()

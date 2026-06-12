@@ -5,12 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import Cookies from 'js-cookie'
 import axios from 'axios'
-
-export const auth_service = 'http://54.242.15.61:5000'
-export const utils_service = 'http://54.242.15.61:5001'
-export const user_service = 'http://54.242.15.61:5002'
-export const job_service = 'http://54.242.15.61:5003'
-export const payment_service = 'http://54.242.15.61:5004'
+import { user_service } from '@/config/services'
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 

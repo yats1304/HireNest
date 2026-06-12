@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Cookies from 'js-cookie'
 import axios from 'axios'
-import { payment_service, useAppData } from '@/context/AppContext'
+import { useAppData } from '@/context/AppContext'
 import toast from 'react-hot-toast'
 import Loading from '@/components/loading'
 import { Card } from '@/components/ui/card'
 import { CheckCircle, Crown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { payment_service } from '@/config/services'
 
 const SubscriptionPage = () => {
   const razorpayLoaded = useRazorPay()
@@ -25,68 +26,68 @@ const SubscriptionPage = () => {
     const token = Cookies.get('token')
     setLoading(true)
     try {
-    const {
-      data: { order },
-    } = await axios.post(
-      `${payment_service}/api/payment/checkout`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const {
+        data: { order },
+      } = await axios.post(
+        `${payment_service}/api/payment/checkout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+        amount: order.id,
+        currency: 'INR',
+        name: 'HireNest',
+        description: 'Find job easily',
+        order_id: order.id,
+        handler: async function name(response: any) {
+          const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = response
+
+          try {
+            const { data } = await axios.post(
+              `${payment_service}/api/payment/verify`,
+              {
+                razorpay_order_id,
+                razorpay_payment_id,
+                razorpay_signature,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            toast.success(data.message)
+            setUser(data.updatedUser)
+            router.push(`/payment/success/${razorpay_payment_id}`)
+            setLoading(false)
+          } catch (error: any) {
+            setLoading(false)
+            toast.error(error.response.data.message)
+          } finally {
+            setLoading(false)
+          }
+        },
+        theme: {
+          color: '#F37254',
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false)
+            toast.error('Payment cancelled')
+          },
         },
       }
-    )
 
-    const options = {
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
-      amount: order.id,
-      currency: 'INR',
-      name: 'HireNest',
-      description: 'Find job easily',
-      order_id: order.id,
-      handler: async function name(response: any) {
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = response
+      if (!razorpayLoaded) console.log('Something went wrong with script!')
 
-        try {
-          const { data } = await axios.post(
-            `${payment_service}/api/payment/verify`,
-            {
-              razorpay_order_id,
-              razorpay_payment_id,
-              razorpay_signature,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          toast.success(data.message)
-          setUser(data.updatedUser)
-          router.push(`/payment/success/${razorpay_payment_id}`)
-          setLoading(false)
-        } catch (error: any) {
-          setLoading(false)
-          toast.error(error.response.data.message)
-        } finally {
-          setLoading(false)
-        }
-      },
-      theme: {
-        color: '#F37254',
-      },
-      modal: {
-        ondismiss: () => {
-          setLoading(false)
-          toast.error('Payment cancelled')
-        },
-      },
-    }
-
-    if (!razorpayLoaded) console.log('Something went wrong with script!')
-
-    const razorpay = new window.Razorpay(options)
-    razorpay.open()
+      const razorpay = new window.Razorpay(options)
+      razorpay.open()
     } catch (error: any) {
       setLoading(false)
       toast.error(error?.response?.data?.message || 'Something went wrong')

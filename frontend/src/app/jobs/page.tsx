@@ -4,7 +4,6 @@ import { Job } from '@/types'
 import React, { useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie'
 import axios from 'axios'
-import { job_service } from '@/context/AppContext'
 import { Button } from '@/components/ui/button'
 import { Briefcase, Filter, MapPin, Search, X } from 'lucide-react'
 import Loading from '@/components/loading'
@@ -19,6 +18,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { job_service } from '@/config/services'
 
 const locations: string[] = [
   'Delhi',

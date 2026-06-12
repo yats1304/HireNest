@@ -3,7 +3,7 @@
 import Loading from '@/components/loading'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { job_service, useAppData } from '@/context/AppContext'
+import { useAppData } from '@/context/AppContext'
 import { Application, Job } from '@/types'
 import axios from 'axios'
 import {
@@ -21,6 +21,7 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
+import { job_service } from '@/config/services'
 
 const JobPage = () => {
   const { user, isAuth, applyJob, applications, btnLoading } = useAppData()

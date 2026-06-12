@@ -1,6 +1,6 @@
 'use client'
 
-import { job_service, useAppData } from '@/context/AppContext'
+import { useAppData } from '@/context/AppContext'
 import { useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie'
 import toast from 'react-hot-toast'
@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { job_service } from '@/config/services'
 
 const Company = () => {
   const { loading } = useAppData()

@@ -1,6 +1,5 @@
 'use client'
 
-import { user_service } from '@/context/AppContext'
 import { User } from '@/types'
 import axios from 'axios'
 import { useParams } from 'next/navigation'
@@ -9,6 +8,7 @@ import Cookies from 'js-cookie'
 import Loading from '@/components/loading'
 import Info from '../components/info'
 import Skills from '../components/skills'
+import { user_service } from '@/config/services'
 
 const UserAccount = () => {
   const [user, setUser] = useState<User | null>(null)
