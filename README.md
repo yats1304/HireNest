@@ -2,7 +2,7 @@
 
 **HireNest** is a full-stack job portal platform built on a microservices architecture. Job seekers can browse and apply for jobs, manage their profiles, and leverage AI-powered tools for career guidance and resume analysis. Recruiters can create companies, post job listings, and manage applicant statuses — all backed by independent, scalable services communicating via Kafka.
 
-> 🌐 **Live Demo**: [https://hire-nest-xi.vercel.app](https://hire-nest-xi.vercel.app)
+> 🌐 **Live Demo**: [https://hirenest.yatishchaubal.online/](https://hirenest.yatishchaubal.online/)
 
 ---
 
